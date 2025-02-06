@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Shayan_h1383
+      MYSQL_DATABASE: membership_db
+      MYSQL_USER: ali
+      MYSQL_PASSWORD: sodagar
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+
+  backend:
+    build: .
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "mysql://ali:sodagar@db:3306/membership_db"
+      JWT_SECRET: "your-secret-key"
+    volumes:
+      - .:/app
+    command: ["npm", "start"]
+
+volumes:
+  mysql_data:
+  debian-openssl-3.0.x:

@@ -1,0 +1,31 @@
+// Define the database connection
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL") // Uses .env file for connection string
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
+}
+
+// User model
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  role     String @default("member")
+
+  membership Membership?
+}
+
+// Membership model
+model Membership {
+  id     Int    @id @default(autoincrement())
+  userId Int    @unique
+  status String @default("active")
+  plan   String @default("free")
+
+  user User @relation(fields: [userId], references: [id])
+}
